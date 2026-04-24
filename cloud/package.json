@@ -1,0 +1,17 @@
+{
+  "name": "vibefarm-cloud",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VibeFarm multiplayer backend — Cloudflare Workers + Durable Objects",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "types": "wrangler types"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241112.0",
+    "typescript": "^5.4.0",
+    "wrangler": "^3.85.0"
+  }
+}

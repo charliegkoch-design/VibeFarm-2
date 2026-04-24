@@ -1,0 +1,14 @@
+name = "vibefarm-cloud"
+main = "src/worker.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Durable Object binding for rooms
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "Room"
+
+# Migration to create the Durable Object class
+[[migrations]]
+tag = "v1"
+new_classes = ["Room"]
