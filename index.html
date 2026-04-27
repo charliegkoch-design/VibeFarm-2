@@ -3166,7 +3166,7 @@
   // ── MultiplayerClient (WebSocket → Render relay server) ──────────────────
   // All traffic flows through a dedicated Node.js server on Render.
   // ⚠️  Replace VF_SERVER_WS with your actual Render WebSocket URL after deploy.
-  const VF_SERVER_WS = 'wss://vibefarm.onrender.com';
+  const VF_SERVER_WS = 'ws://vibefarm-2.onrender.com';
   const VF_PUBLIC_GAME_BASE = 'https://sparkly-sundae-c3d1f5.netlify.app';
   function buildInviteLink(roomCode) {
     const base = String(VF_PUBLIC_GAME_BASE).replace(/\/$/, '');
@@ -5107,7 +5107,7 @@
       const _baseSc=.5+.5*Math.sin((phase-.25)*Math.PI*2);
       let sc=_baseSc;
       if(_sleepAnim){
-        const DARK_DUR=1.5,HOLD_DUR=0.4,BRIGHT_DUR=1.5;
+        const DARK_DUR=1.5,COUNTDOWN_DUR=3,HOLD_DUR=3.5,BRIGHT_DUR=1.5;
         const sa=_sleepAnim;
         sa.t+=dt;
         if(sa.phase==='darkening'){
@@ -5116,7 +5116,12 @@
           if(sa.t>=DARK_DUR){sa.phase='hold';sa.t=0;}
         }else if(sa.phase==='hold'){
           sc=0;
-          if(!sa.held){
+          // Countdown: "Waking in 3… 2… 1…"
+          if(sa.t<COUNTDOWN_DUR){
+            const secs=Math.ceil(COUNTDOWN_DUR-sa.t);
+            if(sleepOvr)sleepOvr.querySelector('span').textContent='😴 Sleeping…  Waking in '+secs+'…';
+          }
+          if(sa.t>=COUNTDOWN_DUR&&!sa.held){
             // Apply all sleep effects at darkest moment
             farmCal.advanceDay();ground.onFarmDay(colony);vibeClk.skipToMorning();
             civ.hp=civ.maxHp;civ.food=Math.min(civ.food+10,999);
