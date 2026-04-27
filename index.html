@@ -215,11 +215,11 @@
     }
     #help-btn:hover { color: var(--text); border-color: rgba(86,201,122,.4); }
 
-    /* ── Toast stack container ── */
+    /* ── Toast stack container — top-centre, below the day/level bar ── */
     #toast-stack {
-      position: fixed; right: 10px; top: 55px; z-index: 50;
-      display: flex; flex-direction: column; gap: 8px;
-      pointer-events: none; align-items: flex-end;
+      position: fixed; left: 50%; top: 90px; transform: translateX(-50%);
+      z-index: 50; display: flex; flex-direction: column; gap: 8px;
+      pointer-events: none; align-items: center;
     }
     /* ── Shared top-right toast style ── */
     .tr-toast {
@@ -232,8 +232,8 @@
       max-width: 280px;
     }
     @keyframes tr-in {
-      from { opacity:0; transform: translateX(20px); }
-      to   { opacity:1; transform: translateX(0); }
+      from { opacity:0; transform: translateY(-10px) scale(.95); }
+      to   { opacity:1; transform: translateY(0) scale(1); }
     }
     /* Individual toast colours */
     #ach-toast {
@@ -641,9 +641,9 @@
     #mp-btn.online #mp-status-dot { background: #a5d6a7; animation: mp-pulse 1.5s infinite; }
     @keyframes mp-pulse { 0%,100% { box-shadow: 0 0 0 rgba(165,214,167,.5); } 50% { box-shadow: 0 0 10px rgba(165,214,167,.8); } }
 
-    /* Character customise button */
+    /* Character customise button — sits above the Multiplayer button */
     #char-btn {
-      position: fixed; right: 130px; bottom: 108px; z-index: 12;
+      position: fixed; right: 90px; bottom: 148px; z-index: 12;
       padding: 5px 12px; height: 32px; border-radius: 16px;
       background: linear-gradient(135deg, rgba(255,111,0,.85), rgba(255,160,0,.85));
       border: 1px solid rgba(255,255,255,.25); color: #fff;
@@ -652,22 +652,23 @@
     }
     #char-btn:hover { filter: brightness(1.15); }
 
-    /* Character customise modal */
+    /* Character customise panel — anchored bottom-right, no full-screen overlay */
     #char-modal {
-      display: none; position: fixed; inset: 0; z-index: 80;
-      background: rgba(0,0,0,.65); align-items: center; justify-content: center;
+      display: none; position: fixed;
+      right: 10px; bottom: 190px;
+      z-index: 45; width: 300px; max-width: 94vw;
     }
-    #char-modal.show { display: flex; }
+    #char-modal.show { display: block; }
     #char-modal-box {
-      background: linear-gradient(160deg,#0d1b2a,#1a2a40);
-      border: 1px solid rgba(255,255,255,.15); border-radius: 18px;
-      padding: 24px 28px; width: 320px; max-width: 94vw;
+      background: linear-gradient(160deg,rgba(13,27,42,.98),rgba(26,42,64,.98));
+      border: 1px solid rgba(255,255,255,.15); border-radius: 16px;
+      padding: 18px 20px;
       box-shadow: 0 8px 40px rgba(0,0,0,.7);
       color: #fff; font-family: inherit;
     }
     #char-modal-box h3 {
-      margin: 0 0 18px; font-size: 15px; letter-spacing: .04em;
-      text-align: center; color: #ffd54f;
+      margin: 0 0 14px; font-size: 14px; letter-spacing: .04em;
+      color: #ffd54f;
     }
     .cust-section { margin-bottom: 16px; }
     .cust-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.55); margin-bottom: 8px; letter-spacing: .06em; }
@@ -3800,9 +3801,8 @@
       }
 
       const modal=document.getElementById('char-modal');
-      document.getElementById('char-btn').onclick=()=>modal.classList.add('show');
+      document.getElementById('char-btn').onclick=()=>modal.classList.toggle('show');
       document.getElementById('char-modal-close').onclick=()=>modal.classList.remove('show');
-      modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show');});
     })();
 
     const HOMEX=48,HOMEZ=48;
