@@ -3166,7 +3166,7 @@
   // ── MultiplayerClient (WebSocket → Render relay server) ──────────────────
   // All traffic flows through a dedicated Node.js server on Render.
   // ⚠️  Replace VF_SERVER_WS with your actual Render WebSocket URL after deploy.
-  const VF_SERVER_WS = 'ws://vibefarm-2.onrender.com';
+  const VF_SERVER_WS = 'wss://vibefarm-2.onrender.com';
   const VF_PUBLIC_GAME_BASE = 'https://sparkly-sundae-c3d1f5.netlify.app';
   function buildInviteLink(roomCode) {
     const base = String(VF_PUBLIC_GAME_BASE).replace(/\/$/, '');
