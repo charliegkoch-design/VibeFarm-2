@@ -257,7 +257,7 @@
     }
     #dmg-flash { position: fixed; inset: 0; pointer-events: none; z-index: 60; background: rgba(200,0,0,0); transition: background .08s; }
     #hint-line {
-      position: fixed; left: 50%; bottom: 58px; transform: translateX(-50%);
+      position: fixed; left: 50%; bottom: 114px; transform: translateX(-50%);
       z-index: 12; padding: 5px 14px; border-radius: 20px;
       background: rgba(0,0,0,.65); color: #fff; font-size: 11px; display: none; white-space: nowrap;
     }
@@ -2444,7 +2444,7 @@
       gr.add(body,eL,eR);
       gr.position.set(cx+Math.cos(a)*r,0,cz+Math.sin(a)*r);gr.frustumCulled=false;
       this.scene.add(gr);
-      const hp=3+tier*2;
+      const hp=10+tier*6;
       return{group:gr,hp,maxHp:hp,cd:0,w:Math.random()*6,hpEl:null,tier};
     }
     startDuel(){
@@ -2458,7 +2458,7 @@
         for(let i=0;i<3;i++)this.enemies.push(this._mkEnemy(2));
         return;
       }
-      const count=2+this.wave;
+      const count=3+this.wave;
       for(let i=0;i<count;i++)this.enemies.push(this._mkEnemy(this.wave-1));
     }
     _mkBoss(){
@@ -2483,7 +2483,7 @@
       gr.add(body,crown,eyeL,eyeR);
       gr.position.set(cx,0,cz);gr.frustumCulled=false;
       this.scene.add(gr);
-      return{group:gr,hp:60,maxHp:60,cd:0,w:Math.random()*6,hpEl:null,tier:5,isBoss:true};
+      return{group:gr,hp:180,maxHp:180,cd:0,w:Math.random()*6,hpEl:null,tier:5,isBoss:true};
     }
     endDuel(){
       this.active=false;this.wave=0;this.restTimer=0;
@@ -2496,17 +2496,17 @@
       for(let i=this.enemies.length-1;i>=0;i--){
         const e=this.enemies[i];
         const dx=px-e.group.position.x,dz=pz-e.group.position.z,dist=Math.hypot(dx,dz);
-        const spd=2.0+e.tier*.25;
+        const spd=3.0+e.tier*.45;
         if(dist>.9){e.group.position.x+=(dx/dist)*spd*dt;e.group.position.z+=(dz/dist)*spd*dt;e.group.rotation.y=Math.atan2(dx,dz);}
         e.w+=dt*7;e.group.children[0].rotation.y=Math.sin(e.w)*.2;
-        e.cd-=dt;if(dist<1.2&&e.cd<=0){e.cd=1.5;ev.push({type:'hit',dmg:8+e.tier*3});}
+        e.cd-=dt;if(dist<1.2&&e.cd<=0){e.cd=1.1;ev.push({type:'hit',dmg:12+e.tier*5});}
         if(camera&&renderer)this._hpBar(e,camera,renderer);
       }
       // Rest period between waves
       if(this.active&&this.enemies.length===0){
         if(this.restTimer<=0){
           if(this.wave>=this.maxWave){ev.push({type:'victory'});this.active=false;}
-          else{this.restTimer=4.0;ev.push({type:'waveClear',wave:this.wave});}
+          else{this.restTimer=2.5;ev.push({type:'waveClear',wave:this.wave});}
         }else{
           this.restTimer-=dt;
           if(this.restTimer<=0){this.wave++;this._spawnWave();ev.push({type:'waveStart',wave:this.wave});}
