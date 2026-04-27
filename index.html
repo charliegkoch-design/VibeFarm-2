@@ -215,9 +215,14 @@
     }
     #help-btn:hover { color: var(--text); border-color: rgba(86,201,122,.4); }
 
+    /* ── Toast stack container ── */
+    #toast-stack {
+      position: fixed; right: 10px; top: 55px; z-index: 50;
+      display: flex; flex-direction: column; gap: 8px;
+      pointer-events: none; align-items: flex-end;
+    }
     /* ── Shared top-right toast style ── */
     .tr-toast {
-      position: fixed; right: 10px; z-index: 50;
       padding: 9px 14px; border-radius: 10px;
       font-size: 12px; font-weight: 700; color: #fff;
       pointer-events: none;
@@ -232,23 +237,21 @@
     }
     /* Individual toast colours */
     #ach-toast {
-      top: 55px;
       background: linear-gradient(135deg,rgba(49,27,146,.97),rgba(74,20,140,.97));
       border-color: #7c4dff;
     }
     #richest-toast {
-      top: 100px;
       background: linear-gradient(135deg,rgba(80,55,0,.97),rgba(120,90,0,.97));
       border-color: var(--gold); color: var(--gold);
     }
     #sleep-overlay {
-      display: none; top: 145px;
+      display: none;
       background: linear-gradient(135deg,rgba(10,20,60,.97),rgba(20,40,90,.97));
       border-color: rgba(100,160,255,.4); color: #b3d9ff;
     }
     #sleep-overlay.show { display: block; }
     #fish-overlay {
-      display: none; top: 145px;
+      display: none;
       background: linear-gradient(135deg,rgba(0,60,80,.97),rgba(0,100,120,.97));
       border-color: #4dd0e1; color: #e0f7fa;
     }
@@ -360,7 +363,6 @@
     #arena-hud .ah-rest { color: #81c784; }
     #arena-banner {
       display: none;
-      top: 235px;
       background: linear-gradient(135deg,rgba(80,0,0,.97),rgba(140,20,20,.97));
       border-color: #e53935; font-size: 13px;
     }
@@ -435,7 +437,6 @@
     /* ── Level-up banner (top-right) ── */
     #lvl-banner {
       display: none;
-      top: 190px;
       background: linear-gradient(135deg,rgba(49,27,146,.97),rgba(124,77,255,.97));
       border-color: #b388ff; font-size: 14px; letter-spacing: .03em;
     }
@@ -619,7 +620,7 @@
       padding: 2px 8px; border-radius: 12px;
       background: linear-gradient(135deg, rgba(124,77,255,.9), rgba(83,109,254,.9));
       color: #fff; font-size: 10px; font-weight: 700;
-      transform: translateX(-50%); white-space: nowrap;
+      transform: translate(-50%, -100%); white-space: nowrap;
       border: 1px solid rgba(255,255,255,.2);
       text-shadow: 0 1px 2px rgba(0,0,0,.4);
     }
@@ -639,6 +640,58 @@
     }
     #mp-btn.online #mp-status-dot { background: #a5d6a7; animation: mp-pulse 1.5s infinite; }
     @keyframes mp-pulse { 0%,100% { box-shadow: 0 0 0 rgba(165,214,167,.5); } 50% { box-shadow: 0 0 10px rgba(165,214,167,.8); } }
+
+    /* Character customise button */
+    #char-btn {
+      position: fixed; right: 130px; bottom: 108px; z-index: 12;
+      padding: 5px 12px; height: 32px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255,111,0,.85), rgba(255,160,0,.85));
+      border: 1px solid rgba(255,255,255,.25); color: #fff;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: all .15s;
+    }
+    #char-btn:hover { filter: brightness(1.15); }
+
+    /* Character customise modal */
+    #char-modal {
+      display: none; position: fixed; inset: 0; z-index: 80;
+      background: rgba(0,0,0,.65); align-items: center; justify-content: center;
+    }
+    #char-modal.show { display: flex; }
+    #char-modal-box {
+      background: linear-gradient(160deg,#0d1b2a,#1a2a40);
+      border: 1px solid rgba(255,255,255,.15); border-radius: 18px;
+      padding: 24px 28px; width: 320px; max-width: 94vw;
+      box-shadow: 0 8px 40px rgba(0,0,0,.7);
+      color: #fff; font-family: inherit;
+    }
+    #char-modal-box h3 {
+      margin: 0 0 18px; font-size: 15px; letter-spacing: .04em;
+      text-align: center; color: #ffd54f;
+    }
+    .cust-section { margin-bottom: 16px; }
+    .cust-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.55); margin-bottom: 8px; letter-spacing: .06em; }
+    .cust-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cust-swatch {
+      width: 30px; height: 30px; border-radius: 8px; cursor: pointer;
+      border: 2px solid transparent; transition: all .12s;
+      box-shadow: 0 2px 6px rgba(0,0,0,.4);
+    }
+    .cust-swatch:hover { transform: scale(1.15); }
+    .cust-swatch.active { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.35); }
+    .cust-row-picker { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .cust-row-picker input[type=color] {
+      width: 36px; height: 30px; border: none; border-radius: 6px; cursor: pointer;
+      background: none; padding: 0;
+    }
+    .cust-row-picker span { font-size: 11px; color: rgba(255,255,255,.5); }
+    #char-modal-close {
+      display: block; width: 100%; margin-top: 8px; padding: 9px;
+      border-radius: 10px; border: none; cursor: pointer;
+      background: linear-gradient(135deg,#7c4dff,#536dfe);
+      color: #fff; font-weight: 700; font-size: 13px; font-family: inherit;
+    }
+    #char-modal-close:hover { filter: brightness(1.1); }
 
     /* Chat */
     #chat-box {
@@ -850,6 +903,31 @@
   <!-- Help / Settings buttons -->
   <button id="help-btn" title="Controls">?</button>
   <button id="settings-btn" title="Settings" style="position:fixed;right:50px;bottom:108px;z-index:12;width:32px;height:32px;border-radius:50%;background:rgba(12,18,28,.8);border:1px solid rgba(255,255,255,.1);color:var(--text-dim);font-size:14px;cursor:pointer;">⚙</button>
+  <button id="char-btn" title="Customise Character">🎨 Look</button>
+
+  <!-- Character customisation modal -->
+  <div id="char-modal">
+    <div id="char-modal-box">
+      <h3>🎨 Customise Character</h3>
+      <div class="cust-section">
+        <div class="cust-label">SHIRT / BODY COLOUR</div>
+        <div class="cust-swatches" id="body-swatches"></div>
+        <div class="cust-row-picker">
+          <input type="color" id="body-picker" title="Custom colour">
+          <span>custom</span>
+        </div>
+      </div>
+      <div class="cust-section">
+        <div class="cust-label">SKIN TONE</div>
+        <div class="cust-swatches" id="skin-swatches"></div>
+      </div>
+      <div class="cust-section">
+        <div class="cust-label">HAIR COLOUR</div>
+        <div class="cust-swatches" id="hair-swatches"></div>
+      </div>
+      <button id="char-modal-close">Done</button>
+    </div>
+  </div>
 
   <!-- ── MODALS ── -->
 
@@ -1054,13 +1132,15 @@
     </div>
   </div>
 
-  <!-- Overlays -->
-  <div id="ach-toast"     class="tr-toast">🏆 Achievement!</div>
-  <div id="richest-toast" class="tr-toast">💰 Richest in the Valley!</div>
-  <div id="sleep-overlay" class="tr-toast"><span>😴 Sleeping…</span></div>
-  <div id="fish-overlay"  class="tr-toast">🎣 Fishing…</div>
-  <div id="lvl-banner"    class="tr-toast">⚡ LEVEL UP!</div>
-  <div id="arena-banner"  class="tr-toast">⚔️ FIGHT!</div>
+  <!-- Overlays — all inside a flex column so they never overlap -->
+  <div id="toast-stack">
+    <div id="ach-toast"     class="tr-toast">🏆 Achievement!</div>
+    <div id="richest-toast" class="tr-toast">💰 Richest in the Valley!</div>
+    <div id="sleep-overlay" class="tr-toast"><span>😴 Sleeping…</span></div>
+    <div id="fish-overlay"  class="tr-toast">🎣 Fishing…</div>
+    <div id="lvl-banner"    class="tr-toast">⚡ LEVEL UP!</div>
+    <div id="arena-banner"  class="tr-toast">⚔️ FIGHT!</div>
+  </div>
   <div id="dmg-flash"></div>
   <div id="hint-line"></div>
   <div id="err-banner"></div>
@@ -2368,11 +2448,29 @@
       this.THREE=THREE;this.speed=5.2;this.keys=new Set();
       this.velocity=new THREE.Vector3();this.facing=new THREE.Vector2(0,1);
       this.group=new THREE.Group();this.group.position.set(0,.5,0);
-      const body=new THREE.Mesh(new THREE.BoxGeometry(.55,.9,.35),new THREE.MeshLambertMaterial({color:0x4e8cff}));
-      body.position.y=.45;body.frustumCulled=false;this.body=body;
-      const head=new THREE.Mesh(new THREE.BoxGeometry(.42,.38,.42),new THREE.MeshLambertMaterial({color:0xffcc88}));
-      head.position.y=.95;head.frustumCulled=false;
-      this.group.add(body,head);this.group.frustumCulled=false;scene.add(this.group);
+      const savedBodyColor=parseInt(localStorage.getItem('vf-body-color')||'0x4e8cff',16);
+      const savedSkinColor=parseInt(localStorage.getItem('vf-skin-color')||'0xffcc88',16);
+      const savedHairColor=parseInt(localStorage.getItem('vf-hair-color')||'0x5d3a1a',16);
+      const body=new THREE.Mesh(new THREE.BoxGeometry(.55,.82,.35),new THREE.MeshLambertMaterial({color:savedBodyColor}));
+      body.position.y=.46;body.frustumCulled=false;this.body=body;
+      const head=new THREE.Mesh(new THREE.BoxGeometry(.42,.38,.42),new THREE.MeshLambertMaterial({color:savedSkinColor}));
+      head.position.y=.97;head.frustumCulled=false;this.head=head;
+      // Arms
+      const lArm=new THREE.Mesh(new THREE.BoxGeometry(.15,.52,.15),new THREE.MeshLambertMaterial({color:savedBodyColor}));
+      lArm.position.set(-.38,.46,0);lArm.frustumCulled=false;this.lArm=lArm;
+      const rArm=new THREE.Mesh(new THREE.BoxGeometry(.15,.52,.15),new THREE.MeshLambertMaterial({color:savedBodyColor}));
+      rArm.position.set(.38,.46,0);rArm.frustumCulled=false;this.rArm=rArm;
+      // Hair
+      const hair=new THREE.Mesh(new THREE.BoxGeometry(.44,.1,.44),new THREE.MeshLambertMaterial({color:savedHairColor}));
+      hair.position.set(0,1.22,0);hair.frustumCulled=false;this.hair=hair;
+      // Eyes
+      const eyeMat=new THREE.MeshLambertMaterial({color:0x1a1a2e});
+      const lEye=new THREE.Mesh(new THREE.BoxGeometry(.09,.08,.05),eyeMat);
+      lEye.position.set(-.1,.99,-.22);lEye.frustumCulled=false;
+      const rEye=new THREE.Mesh(new THREE.BoxGeometry(.09,.08,.05),eyeMat);
+      rEye.position.set(.1,.99,-.22);rEye.frustumCulled=false;
+      this.group.add(body,head,lArm,rArm,hair,lEye,rEye);
+      this.group.frustumCulled=false;scene.add(this.group);
       this._bS=body.scale.clone();this._jT=0;
     }
     setKey(code,down){if(down)this.keys.add(code);else this.keys.delete(code);}
@@ -2387,7 +2485,8 @@
         this._jT+=dt*14;const w=Math.sin(this._jT);
         this.body.scale.x=this._bS.x*(1+.06*w);this.body.scale.y=this._bS.y*(1-.05*Math.abs(w));this.body.scale.z=this._bS.z*(1-.04*w);
         this.group.rotation.y=Math.atan2(this.velocity.x,this.velocity.z);
-      }else this.body.scale.copy(this._bS);
+        if(this.lArm){this.lArm.rotation.x=w*.55;this.rArm.rotation.x=-w*.55;}
+      }else{this.body.scale.copy(this._bS);if(this.lArm){this.lArm.rotation.x=0;this.rArm.rotation.x=0;}}
       if(bounds&&bounds.useRect){
         this.group.position.x=T.MathUtils.clamp(this.group.position.x,bounds.minX,bounds.maxX);
         this.group.position.z=T.MathUtils.clamp(this.group.position.z,bounds.minZ,bounds.maxZ);
@@ -3342,20 +3441,44 @@
 
     _createPeerMesh(color) {
       const T = this.THREE, g = new T.Group();
-      const body = new T.Mesh(new T.BoxGeometry(0.55, 0.9, 0.35), new T.MeshLambertMaterial({ color }));
-      body.position.y = 0.45; body.frustumCulled = false;
+      const body = new T.Mesh(new T.BoxGeometry(0.55, 0.82, 0.35), new T.MeshLambertMaterial({ color }));
+      body.position.y = 0.46; body.frustumCulled = false;
       const head = new T.Mesh(new T.BoxGeometry(0.42, 0.38, 0.42), new T.MeshLambertMaterial({ color: 0xffcc88 }));
-      head.position.y = 0.95; head.frustumCulled = false;
+      head.position.y = 0.97; head.frustumCulled = false;
+      // Arms
+      const armMat = new T.MeshLambertMaterial({ color });
+      const lArm = new T.Mesh(new T.BoxGeometry(0.15, 0.52, 0.15), armMat);
+      lArm.position.set(-0.38, 0.46, 0); lArm.frustumCulled = false;
+      const rArm = new T.Mesh(new T.BoxGeometry(0.15, 0.52, 0.15), armMat);
+      rArm.position.set(0.38, 0.46, 0); rArm.frustumCulled = false;
+      // Hair
+      const hair = new T.Mesh(new T.BoxGeometry(0.44, 0.1, 0.44), new T.MeshLambertMaterial({ color: 0x5d3a1a }));
+      hair.position.set(0, 1.22, 0); hair.frustumCulled = false;
+      // Eyes
+      const eyeMat = new T.MeshLambertMaterial({ color: 0x1a1a2e });
+      const lEye = new T.Mesh(new T.BoxGeometry(0.09, 0.08, 0.05), eyeMat);
+      lEye.position.set(-0.1, 0.99, -0.22); lEye.frustumCulled = false;
+      const rEye = new T.Mesh(new T.BoxGeometry(0.09, 0.08, 0.05), eyeMat);
+      rEye.position.set(0.1, 0.99, -0.22); rEye.frustumCulled = false;
+      // Ground ring
       const ring = new T.Mesh(new T.TorusGeometry(0.45, 0.04, 6, 18),
         new T.MeshBasicMaterial({ color: 0xb388ff, transparent: true, opacity: 0.85 }));
       ring.rotation.x = -Math.PI / 2; ring.position.y = 0.04; ring.frustumCulled = false;
-      g.add(body, head, ring); g.userData.ring = ring; g.frustumCulled = false;
+      g.add(body, head, lArm, rArm, hair, lEye, rEye, ring);
+      g.userData.ring = ring; g.userData.lArm = lArm; g.userData.rArm = rArm;
+      g.frustumCulled = false;
       return g;
     }
 
     update(dt, player, tool, camera, renderer) {
       for (const p of this.peers.values()) {
         if (p.group && p.group.userData.ring) p.group.userData.ring.rotation.z += dt * 1.2;
+        if (p.group && p.group.userData.lArm) {
+          p._armT = (p._armT || 0) + dt * 7;
+          const sw = Math.sin(p._armT) * 0.45;
+          p.group.userData.lArm.rotation.x = sw;
+          p.group.userData.rArm.rotation.x = -sw;
+        }
       }
       if (!this.connected) return;
 
@@ -3376,7 +3499,7 @@
       // Update peer name labels
       for (const p of this.peers.values()) {
         if (!p.labelEl || !p.group) continue;
-        const v = p.group.position.clone(); v.y = 1.6; v.project(camera);
+        const v = p.group.position.clone(); v.y = 2.6; v.project(camera);
         if (v.z < 1) {
           const hw = renderer.domElement.clientWidth / 2, hh = renderer.domElement.clientHeight / 2;
           p.labelEl.style.display = 'block';
@@ -3620,6 +3743,68 @@
     scene.add(cursorMesh);
 
     const player=new PlayerController(THREE,scene);
+
+    // ── Character customisation ──────────────────────────────────────────────
+    (function initCharCustomiser(){
+      const BODY_COLORS=[0x4e8cff,0xe53935,0x43a047,0xfb8c00,0x8e24aa,0x00acc1,0xf06292,0x546e7a];
+      const SKIN_TONES =[0xffcc88,0xf4a460,0xc68642,0x8d5524,0xffe0bd,0xffdbb4];
+      const HAIR_COLORS=[0x5d3a1a,0x1a1a1a,0xf4e04d,0xd32f2f,0x757575,0xffa07a,0x4a235a,0xffffff];
+
+      function hexStr(n){return '#'+n.toString(16).padStart(6,'0');}
+      function applyBody(hex){
+        const c=parseInt(hex.replace('#',''),16);
+        localStorage.setItem('vf-body-color','0x'+c.toString(16));
+        if(player.body)player.body.material.color.setHex(c);
+        if(player.lArm)player.lArm.material.color.setHex(c);
+        if(player.rArm)player.rArm.material.color.setHex(c);
+      }
+      function applySkin(hex){
+        const c=parseInt(hex.replace('#',''),16);
+        localStorage.setItem('vf-skin-color','0x'+c.toString(16));
+        if(player.head)player.head.material.color.setHex(c);
+      }
+      function applyHair(hex){
+        const c=parseInt(hex.replace('#',''),16);
+        localStorage.setItem('vf-hair-color','0x'+c.toString(16));
+        if(player.hair)player.hair.material.color.setHex(c);
+      }
+
+      function buildSwatches(containerId,colors,storageKey,applyFn){
+        const el=document.getElementById(containerId);
+        if(!el)return;
+        const saved=localStorage.getItem(storageKey);
+        colors.forEach(col=>{
+          const sw=document.createElement('div');
+          sw.className='cust-swatch'+(saved==='0x'+col.toString(16)?' active':'');
+          sw.style.background=hexStr(col);
+          sw.onclick=()=>{
+            el.querySelectorAll('.cust-swatch').forEach(s=>s.classList.remove('active'));
+            sw.classList.add('active');
+            applyFn(hexStr(col));
+          };
+          el.appendChild(sw);
+        });
+      }
+
+      buildSwatches('body-swatches',BODY_COLORS,'vf-body-color',applyBody);
+      buildSwatches('skin-swatches',SKIN_TONES,  'vf-skin-color', applySkin);
+      buildSwatches('hair-swatches',HAIR_COLORS, 'vf-hair-color', applyHair);
+
+      const bodyPicker=document.getElementById('body-picker');
+      if(bodyPicker){
+        bodyPicker.value=hexStr(parseInt(localStorage.getItem('vf-body-color')||'0x4e8cff',16));
+        bodyPicker.oninput=()=>{
+          document.querySelectorAll('#body-swatches .cust-swatch').forEach(s=>s.classList.remove('active'));
+          applyBody(bodyPicker.value);
+        };
+      }
+
+      const modal=document.getElementById('char-modal');
+      document.getElementById('char-btn').onclick=()=>modal.classList.add('show');
+      document.getElementById('char-modal-close').onclick=()=>modal.classList.remove('show');
+      modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show');});
+    })();
+
     const HOMEX=48,HOMEZ=48;
 
     // Energy gating removed — useEnergy always succeeds
@@ -5084,7 +5269,7 @@
       // Update NPC name labels
       for(const r of remotes){
         if(!r._labelEl)continue;
-        const v=r.group.position.clone();v.y=1.6;v.project(camera);
+        const v=r.group.position.clone();v.y=2.6;v.project(camera);
         const hw=renderer.domElement.clientWidth/2,hh=renderer.domElement.clientHeight/2;
         const sx=v.x*hw+hw,sy=-v.y*hh+hh;
         const onScreen=v.z<1&&sx>-50&&sx<renderer.domElement.clientWidth+50;
