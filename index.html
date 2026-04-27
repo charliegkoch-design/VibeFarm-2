@@ -694,6 +694,54 @@
     }
     #char-modal-close:hover { filter: brightness(1.1); }
 
+    /* ── PvP Duel UI ── */
+    #duel-waiting {
+      display:none; position:fixed; left:50%; top:160px; transform:translateX(-50%);
+      z-index:55; padding:9px 20px; border-radius:10px; pointer-events:none;
+      background:linear-gradient(135deg,rgba(20,20,60,.97),rgba(40,40,90,.97));
+      border:1px solid rgba(150,150,255,.4); color:#c5cae9;
+      font-size:12px; font-weight:700;
+    }
+    #duel-waiting.show { display:block; }
+    .duel-overlay-box {
+      position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+      z-index:76; padding:24px 28px; border-radius:16px; min-width:290px;
+      background:linear-gradient(135deg,rgba(10,8,28,.98),rgba(30,15,60,.98));
+      border:2px solid rgba(239,83,80,.55); color:#fff; text-align:center;
+      box-shadow:0 10px 48px rgba(0,0,0,.85); font-family:inherit; display:none;
+    }
+    .duel-overlay-box.show { display:block; }
+    .duel-overlay-box h3 { margin:0 0 8px; font-size:15px; color:#ef9a9a; }
+    .duel-overlay-box p  { margin:0 0 18px; font-size:12px; color:rgba(255,255,255,.68); line-height:1.5; }
+    .duel-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .duel-btn {
+      padding:8px 16px; border-radius:9px; border:none; cursor:pointer;
+      font-size:12px; font-weight:700; font-family:inherit; transition:filter .15s;
+    }
+    .duel-btn.accept  { background:linear-gradient(135deg,#43a047,#2e7d32); color:#fff; }
+    .duel-btn.gold    { background:linear-gradient(135deg,#f57c00,#ff9800); color:#fff; }
+    .duel-btn.decline { background:rgba(239,83,80,.2); border:1px solid rgba(239,83,80,.5); color:#ef9a9a; }
+    .duel-btn:hover   { filter:brightness(1.18); }
+    #duel-challenge-dialog { border-color:rgba(255,215,0,.45); }
+    #duel-challenge-dialog h3 { color:#ffd54f; }
+    #pvp-hud {
+      display:none; position:fixed; left:50%; top:90px; transform:translateX(-50%);
+      z-index:55; min-width:320px; padding:10px 18px; border-radius:12px;
+      background:rgba(5,5,20,.88); border:1px solid rgba(239,83,80,.45);
+      pointer-events:none;
+    }
+    #pvp-hud.show { display:block; }
+    .pvp-title { text-align:center; font-size:11px; font-weight:700; letter-spacing:.07em; color:#ef9a9a; margin-bottom:7px; }
+    .pvp-bars  { display:flex; gap:10px; align-items:center; }
+    .pvp-col   { flex:1; }
+    .pvp-name  { font-size:10px; font-weight:700; color:rgba(255,255,255,.65); margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .pvp-bar-bg   { height:9px; border-radius:5px; background:rgba(255,255,255,.1); overflow:hidden; }
+    .pvp-bar-fill { height:100%; border-radius:5px; transition:width .25s; }
+    .pvp-bar-fill.you { background:linear-gradient(90deg,#43a047,#66bb6a); }
+    .pvp-bar-fill.opp { background:linear-gradient(90deg,#c62828,#ef5350); }
+    .pvp-vs  { font-size:13px; font-weight:900; color:#ffd54f; flex-shrink:0; }
+    .pvp-hp  { font-size:9px; color:rgba(255,255,255,.45); margin-top:2px; }
+
     /* Chat */
     #chat-box {
       position: fixed; right: 10px; bottom: 170px; z-index: 11;
@@ -1145,6 +1193,48 @@
   <div id="dmg-flash"></div>
   <div id="hint-line"></div>
   <div id="err-banner"></div>
+
+  <!-- Duel: challenger waiting -->
+  <div id="duel-waiting">⏳ <span id="duel-wait-txt">Waiting…</span></div>
+
+  <!-- Duel: incoming challenge (shown to target) -->
+  <div class="duel-overlay-box" id="duel-incoming">
+    <h3>⚔️ Duel Challenge!</h3>
+    <p id="duel-in-txt"></p>
+    <div class="duel-btns">
+      <button class="duel-btn accept" id="duel-accept-btn">Accept ⚔️</button>
+      <button class="duel-btn decline" id="duel-decline-btn">Decline ❌</button>
+    </div>
+  </div>
+
+  <!-- Duel: challenge sender picks stake -->
+  <div class="duel-overlay-box" id="duel-challenge-dialog">
+    <h3>⚔️ Challenge Player</h3>
+    <p id="duel-cd-txt"></p>
+    <div class="duel-btns">
+      <button class="duel-btn accept"  id="duel-cd-building">🏗️ Fight for Building</button>
+      <button class="duel-btn gold"    id="duel-cd-gold">💰 Money Duel (500g)</button>
+      <button class="duel-btn decline" id="duel-cd-cancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- PvP HUD (shown during duel) -->
+  <div id="pvp-hud">
+    <div class="pvp-title">⚔️ DUEL — <span id="pvp-stake-lbl"></span></div>
+    <div class="pvp-bars">
+      <div class="pvp-col">
+        <div class="pvp-name" id="pvp-my-name">You</div>
+        <div class="pvp-bar-bg"><div class="pvp-bar-fill you" id="pvp-my-bar" style="width:100%"></div></div>
+        <div class="pvp-hp" id="pvp-my-hp"></div>
+      </div>
+      <div class="pvp-vs">VS</div>
+      <div class="pvp-col" style="text-align:right">
+        <div class="pvp-name" id="pvp-opp-name">Opponent</div>
+        <div class="pvp-bar-bg"><div class="pvp-bar-fill opp" id="pvp-opp-bar" style="width:100%"></div></div>
+        <div class="pvp-hp" id="pvp-opp-hp"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Welcome tutorial popup -->
   <div id="welcome-modal">
@@ -3494,6 +3584,7 @@
         this._send({ type: 'relay', msg: { type: 'snap', snap: {
           x: player.group.position.x, z: player.group.position.z,
           yaw: player.group.rotation.y, tool,
+          ...(this.pvpHp !== undefined ? {pvpHp: this.pvpHp} : {}),
         }}});
       }
 
@@ -3805,6 +3896,122 @@
       document.getElementById('char-modal-close').onclick=()=>modal.classList.remove('show');
     })();
 
+    // ── PvP Duel System ─────────────────────────────────────────────────────
+    const buildingOwners = {};   // key `${gx},${gz}` → {id, name, bName}
+    let pvpDuel = null;          // null | {state, opponentId, opponentName, stake, bGx, bGz, bName, isChallenger, myMaxHp}
+    let _pendingChallenge = null;
+
+    // UI element refs
+    const _pvpWaitEl  = document.getElementById('duel-waiting');
+    const _pvpWaitTxt = document.getElementById('duel-wait-txt');
+    const _pvpInEl    = document.getElementById('duel-incoming');
+    const _pvpInTxt   = document.getElementById('duel-in-txt');
+    const _pvpCdEl    = document.getElementById('duel-challenge-dialog');
+    const _pvpCdTxt   = document.getElementById('duel-cd-txt');
+    const _pvpHud     = document.getElementById('pvp-hud');
+    const _pvpStakeLbl= document.getElementById('pvp-stake-lbl');
+    const _pvpMyBar   = document.getElementById('pvp-my-bar');
+    const _pvpMyHp    = document.getElementById('pvp-my-hp');
+    const _pvpOppBar  = document.getElementById('pvp-opp-bar');
+    const _pvpOppHp   = document.getElementById('pvp-opp-hp');
+    const _pvpMyName  = document.getElementById('pvp-my-name');
+    const _pvpOppName = document.getElementById('pvp-opp-name');
+
+    function _pvpHideAll(){
+      _pvpWaitEl.classList.remove('show');
+      _pvpInEl.classList.remove('show');
+      _pvpCdEl.classList.remove('show');
+      _pvpHud.classList.remove('show');
+    }
+
+    function openChallengeDialog(owner, bGx, bGz, bName){
+      _pendingChallenge = {targetId:owner.id, targetName:owner.name, bGx, bGz, bName};
+      _pvpCdTxt.textContent = 'Challenge '+owner.name+' for their '+bName+'?';
+      _pvpCdEl.classList.add('show');
+    }
+
+    function _sendChallenge(stake){
+      _pvpCdEl.classList.remove('show');
+      if(!_pendingChallenge) return;
+      if(stake==='gold' && civ.gold<500){
+        audio.deny();floats.spawnPlayer('Need 500💰 to duel!','#ef9a9a',camera,renderer,player.group);return;
+      }
+      const pc=_pendingChallenge; _pendingChallenge=null;
+      pvpDuel={state:'waiting',targetId:pc.targetId,targetName:pc.targetName,bGx:pc.bGx,bGz:pc.bGz,bName:pc.bName,stake};
+      mp.sendAction({kind:'duel-challenge',to:pc.targetId,fromName:mp.myName,stake,bGx:pc.bGx,bGz:pc.bGz,bName:pc.bName});
+      _pvpWaitTxt.textContent='Waiting for '+pc.targetName+'…';
+      _pvpWaitEl.classList.add('show');
+      setTimeout(()=>{if(pvpDuel&&pvpDuel.state==='waiting'){pvpDuel=null;_pvpWaitEl.classList.remove('show');}},30000);
+    }
+
+    function _duelRespond(accept){
+      _pvpInEl.classList.remove('show');
+      if(!pvpDuel||pvpDuel.state!=='incoming') return;
+      const d=pvpDuel;
+      mp.sendAction({kind:'duel-response',to:d.fromId,accept,fromName:mp.myName});
+      if(!accept){pvpDuel=null;return;}
+      _startPvpDuel(d.fromId,d.fromName,d.stake,d.bGx,d.bGz,d.bName,false);
+    }
+
+    function _startPvpDuel(opponentId,opponentName,stake,bGx,bGz,bName,isChallenger){
+      _pvpHideAll();
+      const myMaxHp=civ.maxHp||civ.hp;
+      pvpDuel={state:'active',opponentId,opponentName,stake,bGx,bGz,bName,isChallenger,myMaxHp,oppHp:myMaxHp};
+      // Teleport into arena — challengers on opposite sides
+      const cx=ARENA_GX*TILE-HALF+TILE*.5, cz=ARENA_GZ*TILE-HALF+TILE*.5;
+      player.group.position.set(cx+(isChallenger?-4:4),0.5,cz);
+      // HUD
+      _pvpStakeLbl.textContent=stake==='building'?('🏗️ '+bName):'💰 500 Gold';
+      _pvpMyName.textContent=mp.myName||'You';
+      _pvpOppName.textContent=opponentName;
+      _pvpMyBar.style.width='100%';_pvpOppBar.style.width='100%';
+      _pvpMyHp.textContent=civ.hp+' HP';_pvpOppHp.textContent='? HP';
+      _pvpHud.classList.add('show');
+      showArenaBanner('⚔️ DUEL vs '+opponentName+' — FIGHT!');
+    }
+
+    function _endPvpDuel(won){
+      if(!pvpDuel||pvpDuel.state!=='active') return;
+      const d=pvpDuel;
+      pvpDuel={state:'ended'};
+      _pvpHud.classList.remove('show');
+      const prize=d.stake==='gold'?500:Math.max(200,Math.round((Object.values(buildingOwners).length||1)*80+Math.random()*200));
+      if(won){
+        civ.gold+=prize;
+        showArenaBanner('🏆 DUEL WON! +'+prize+'💰'+(d.stake==='building'?' ('+d.bName+' seized!)':''));
+        floats.spawnPlayer('🏆 +'+prize+'💰','#ffd54f',camera,renderer,player.group);
+        if(d.stake==='building'&&d.bGx!==undefined){
+          // Broadcast building removal to all (winner gets gold value)
+          mp.sendAction({kind:'duel-remove-building',gx:d.bGx,gz:d.bGz});
+          _removeBuildingAt(d.bGx,d.bGz);
+        }
+      }else{
+        if(d.stake==='gold') civ.gold=Math.max(0,civ.gold-500);
+        showArenaBanner('💀 DUEL LOST'+(d.stake==='building'?'… '+d.bName+' was taken':'… -500💰'));
+        floats.spawnPlayer('💀 Duel Lost','#ef9a9a',camera,renderer,player.group);
+      }
+      setTimeout(()=>{pvpDuel=null;refreshUI();},3500);
+      refreshUI();
+    }
+
+    function _removeBuildingAt(gx,gz){
+      if(!ground.hasBuilding(gx,gz)) return;
+      ground.buildings[ground.idx(gx,gz)]=0;
+      const ci=colony.placed.findIndex(b=>b.gx===gx&&b.gz===gz);
+      if(ci>=0){scene.remove(colony.placed[ci].mesh);colony.placed.splice(ci,1);}
+      const hi=bldgVis.houses.findIndex(h=>h.gx===gx&&h.gz===gz);
+      if(hi>=0) bldgVis.houses.splice(hi,1);
+      ground.texture.needsUpdate=true;
+      delete buildingOwners[`${gx},${gz}`];
+    }
+
+    // Wire duel dialog buttons
+    document.getElementById('duel-accept-btn').onclick=()=>_duelRespond(true);
+    document.getElementById('duel-decline-btn').onclick=()=>_duelRespond(false);
+    document.getElementById('duel-cd-cancel').onclick=()=>{_pvpCdEl.classList.remove('show');_pendingChallenge=null;};
+    document.getElementById('duel-cd-building').onclick=()=>_sendChallenge('building');
+    document.getElementById('duel-cd-gold').onclick=()=>_sendChallenge('gold');
+
     const HOMEX=48,HOMEZ=48;
 
     // Energy gating removed — useEnergy always succeeds
@@ -4000,7 +4207,7 @@
     function walkBounds(){
       const gx=wToG(player.group.position.x),gz=wToG(player.group.position.z);
       if(inMineZone(gx,gz))return mineWalkBounds();
-      if(arena.active&&inArenaZone(gx,gz))return arenaWalkBounds();
+      if((arena.active||(pvpDuel&&pvpDuel.state==='active'))&&inArenaZone(gx,gz))return arenaWalkBounds();
     return null;
   }
     function tryPortal(){
@@ -4479,6 +4686,16 @@
       const now=performance.now()/1000;
       const px=player.group.position.x,pz=player.group.position.z;
 
+      // ── PvP: challenge if facing another player's building ──────────────
+      if(mp.connected && !pvpDuel && ground.hasBuilding(tx,tz)){
+        const okey=`${tx},${tz}`;
+        const owner=buildingOwners[okey];
+        if(owner && owner.id!==mp.myId && mp.peers.has(owner.id)){
+          openChallengeDialog(owner,tx,tz,owner.bName||'Building');
+          return;
+        }
+      }
+
       // Place selected colony building
       if(selectedBuildDef&&toolbelt.active===ToolId.HAMMER){
         const def=selectedBuildDef;
@@ -4513,7 +4730,8 @@
         floats.spawnPlayer(def.icon+' '+def.name+' built!','#56c97a',camera,renderer,player.group);
         const wx=tx*TILE-HALF+TILE*.5,wz=tz*TILE-HALF+TILE*.5;
         burstParticles(wx,wz,'#66bb6a',18);
-        mp.sendAction({ kind:'build', id:def.id, gx:tx, gz:tz });
+        mp.sendAction({ kind:'build', id:def.id, gx:tx, gz:tz, ownerId:mp.myId, ownerName:mp.myName });
+        buildingOwners[`${tx},${tz}`]={id:mp.myId,name:mp.myName||'You',bName:def.name};
         selectedBuildDef=null;refreshUI();return;
       }
 
@@ -4535,6 +4753,21 @@
 
       // Sword attack — works on both mine enemies and arena enemies
       if(toolbelt.active===ToolId.SWORD){
+        // ── PvP duel hit ──
+        if(pvpDuel&&pvpDuel.state==='active'){
+          const oppPeer=mp.peers.get(pvpDuel.opponentId);
+          if(oppPeer&&oppPeer.snap){
+            const dist=Math.hypot(px-oppPeer.snap.x,pz-oppPeer.snap.z);
+            if(dist<2.8){
+              const dmg=6+civ.swordTier*3+Math.round(colony.swordBonus()*civ.perkCombat);
+              mp.sendAction({kind:'pvp-hit',to:pvpDuel.opponentId,dmg});
+              audio.chop();floats.spawnPlayer('⚔️ HIT! '+dmg,'#ef9a9a',camera,renderer,player.group);
+              burstParticles(px,pz,'#ef5350',10);screenShake(.3);refreshUI();return;
+            }
+          }
+          floats.spawnPlayer('Too far — get closer!','#aaa',camera,renderer,player.group);
+          audio.deny();return;
+        }
         const swBonus=Math.round(colony.swordBonus()*civ.perkCombat);
         let res=null;
         if(arena.active) res=arena.tryAttack(px,pz,civ.swordTier,swBonus);
@@ -5105,7 +5338,7 @@
           if (def.id === 'house') {
             ground.placeBuilding(a.gx, a.gz, 1);
             bldgVis.addHouse(a.gx, a.gz, 1);
-      } else {
+          } else {
             ground.buildings[ground.idx(a.gx,a.gz)] = def.code;
             const mesh = ColonyBuildingFactory.create(THREE, def, a.gx, a.gz);
             scene.add(mesh);
@@ -5113,6 +5346,42 @@
             ground.paintTile(a.gx, a.gz);
             ground.texture.needsUpdate = true;
           }
+          // Register ownership for challenge system
+          if (a.ownerId) buildingOwners[`${a.gx},${a.gz}`] = {id: a.ownerId, name: a.ownerName||'Player', bName: def.name};
+          break;
+        }
+        case 'duel-challenge': {
+          if (a.to !== mp.myId) break;
+          pvpDuel = {state:'incoming', fromId:m.id, fromName:a.fromName||'Player', stake:a.stake, bGx:a.bGx, bGz:a.bGz, bName:a.bName};
+          _pvpInTxt.textContent = (a.fromName||'A player')+' challenges you for '+(a.stake==='building'?'your '+a.bName:'500 gold')+'!';
+          _pvpInEl.classList.add('show');
+          break;
+        }
+        case 'duel-response': {
+          if (a.to !== mp.myId) break;
+          _pvpWaitEl.classList.remove('show');
+          if (!a.accept) {
+            pvpDuel = null;
+            addChatLine('<span class="chat-sys">❌ '+ escapeHtml(a.fromName||'Player') +' declined your challenge</span>');
+            break;
+          }
+          if (pvpDuel && pvpDuel.state === 'waiting') {
+            _startPvpDuel(m.id, pvpDuel.targetName, pvpDuel.stake, pvpDuel.bGx, pvpDuel.bGz, pvpDuel.bName, true);
+          }
+          break;
+        }
+        case 'pvp-hit': {
+          if (a.to !== mp.myId || !pvpDuel || pvpDuel.state !== 'active') break;
+          civ.hp = Math.max(0, civ.hp - (a.dmg||5));
+          dmgFlash.style.background='rgba(200,0,0,.35)';
+          setTimeout(()=>dmgFlash.style.background='rgba(200,0,0,0)',120);
+          refreshUI();
+          if (civ.hp <= 0) _endPvpDuel(false);
+          break;
+        }
+        case 'duel-remove-building': {
+          if (a.winnerId === mp.myId) break; // winner's side handles locally
+          _removeBuildingAt(a.gx, a.gz);
           break;
         }
       }
@@ -5229,7 +5498,24 @@
       pet.update(dt, player, camera, renderer);
 
       // Multiplayer presence sync
+      // Pass current HP into snap when duelling
+      mp.pvpHp = (pvpDuel && pvpDuel.state==='active') ? civ.hp : undefined;
       mp.update(dt, player, toolbelt.active, camera, renderer);
+
+      // ── PvP HUD update ──────────────────────────────────────────────────
+      if(pvpDuel && pvpDuel.state==='active'){
+        const myPct=Math.max(0,civ.hp/(pvpDuel.myMaxHp||civ.maxHp||100)*100).toFixed(1);
+        _pvpMyBar.style.width=myPct+'%';
+        _pvpMyHp.textContent=civ.hp+' HP';
+        const oppPeer=mp.peers.get(pvpDuel.opponentId);
+        if(oppPeer&&oppPeer.snap&&oppPeer.snap.pvpHp!==undefined){
+          pvpDuel.oppHp=oppPeer.snap.pvpHp;
+          const oppPct=Math.max(0,pvpDuel.oppHp/(pvpDuel.myMaxHp||100)*100).toFixed(1);
+          _pvpOppBar.style.width=oppPct+'%';
+          _pvpOppHp.textContent=pvpDuel.oppHp+' HP';
+          if(pvpDuel.oppHp<=0) _endPvpDuel(true);
+        }
+      }
 
       // Minimap
       minimap.draw(ground, player, colony, bldgVis.houses, remotes, enemies, arena.enemies, events.chest, {vjPortals: vjPortals.portals});
@@ -5356,7 +5642,9 @@
       // Arena portal proximity
       const apx=ARENA_PORTAL_GX*TILE-HALF+TILE*.5,apz=ARENA_PORTAL_GZ*TILE-HALF+TILE*.5;
       const dArenaPort=Math.hypot(player.group.position.x-apx,player.group.position.z-apz);
-      if(arena.active&&arena.isExitPortalNear(player.group.position.x,player.group.position.z)){
+      if(pvpDuel&&pvpDuel.state==='active'){
+        hintLine.style.display='block';hintLine.textContent='⚔️ PvP vs '+pvpDuel.opponentName+' — Equip Sword (8) + E to attack!';}
+      else if(arena.active&&arena.isExitPortalNear(player.group.position.x,player.group.position.z)){
         hintLine.style.display='block';hintLine.textContent='E — Exit arena (forfeit duel)';}
       else if(arena.active){
         hintLine.style.display='block';
