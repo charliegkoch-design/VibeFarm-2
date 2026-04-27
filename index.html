@@ -360,9 +360,6 @@
       background: linear-gradient(90deg,#56c97a,#3da85c);
       color: #fff;
     }
-    .wc-btn.next:disabled {
-      opacity: .4; cursor: not-allowed;
-    }
     .wc-btn.skip {
       flex: 0 0 auto; padding: 11px 16px;
       background: rgba(255,255,255,.06);
@@ -370,8 +367,6 @@
       color: var(--text-dim); font-size: 11px;
     }
     .wc-btn.skip:hover { background: rgba(255,255,255,.1); color: var(--text); }
-    /* Timer ring on next button */
-    #wc-timer { font-size: 11px; margin-left: 6px; opacity: .7; }
 
     /* Enemy HP bars */
     .e-hp-wrap { position: fixed; pointer-events: none; z-index: 13; width: 38px; height: 5px; border-radius: 3px; background: rgba(0,0,0,.5); transform: translateX(-50%); }
@@ -1419,9 +1414,7 @@
       <!-- Navigation -->
       <div class="wc-nav">
         <button class="wc-btn skip" id="wc-skip" style="display:none">Skip tutorial</button>
-        <button class="wc-btn next" id="wc-next" disabled>
-          Reading… <span id="wc-timer"></span>
-        </button>
+        <button class="wc-btn next" id="wc-next">Next →</button>
       </div>
 
     </div>
@@ -5550,11 +5543,7 @@
       const dots     = document.querySelectorAll('.wc-dot');
       const nextBtn  = document.getElementById('wc-next');
       const skipBtn  = document.getElementById('wc-skip');
-      const timerSpan= document.getElementById('wc-timer');
-      const PAGE_DELAYS = [5, 6, 6, 6]; // seconds to read each page
       let currentPage = 0;
-      let readTimer   = null;
-      let countdown   = 0;
 
       function closeTutorial(){
         welcomeModal.style.display = 'none';
@@ -5569,23 +5558,8 @@
           d.classList.toggle('done',   i<idx);
         });
         currentPage = idx;
-        // Disable next, start countdown
-        nextBtn.disabled = true;
-        clearInterval(readTimer);
-        countdown = PAGE_DELAYS[idx] || 4;
-        timerSpan.textContent = '('+countdown+'s)';
-        readTimer = setInterval(()=>{
-          countdown--;
-          if(countdown > 0){
-            timerSpan.textContent = '('+countdown+'s)';
-          } else {
-            clearInterval(readTimer);
-            timerSpan.textContent = '';
-            nextBtn.disabled = false;
-            const isLast = idx >= pages.length - 1;
-            nextBtn.textContent = isLast ? '🌾 Start Farming!' : 'Next →';
-          }
-        }, 1000);
+        const isLast = idx >= pages.length - 1;
+        nextBtn.textContent = isLast ? '🌾 Start Farming!' : 'Next →';
       }
 
       nextBtn.onclick = () => {
@@ -5598,18 +5572,8 @@
 
       skipBtn.onclick = closeTutorial;
 
-      // First time: force through — hide skip
-      // Return visit: skip button visible immediately, still show tutorial as reminder
-      if(!isFirstTime){
-        skipBtn.style.display = 'block';
-        // Shorten delays for return players
-        PAGE_DELAYS.fill(0);
-        nextBtn.disabled = false;
-        nextBtn.textContent = 'Next →';
-        timerSpan.textContent = '';
-      } else {
-        goToPage(0);
-      }
+      if(!isFirstTime) skipBtn.style.display = 'block';
+      goToPage(0);
     })();
 
     // ── Vibe Jam 2026 Portal Row (south beach) ─────────────────────────────
