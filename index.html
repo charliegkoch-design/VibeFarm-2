@@ -1413,7 +1413,7 @@
 
       <!-- Navigation -->
       <div class="wc-nav">
-        <button class="wc-btn skip" id="wc-skip" style="display:none">Skip tutorial</button>
+        <button class="wc-btn skip" id="wc-skip" style="display:none;visibility:hidden">Skip</button>
         <button class="wc-btn next" id="wc-next">Next →</button>
       </div>
 
@@ -5572,7 +5572,10 @@
 
       skipBtn.onclick = closeTutorial;
 
-      if(!isFirstTime) skipBtn.style.display = 'block';
+      if(!isFirstTime){
+        closeTutorial();
+        return;
+      }
       goToPage(0);
     })();
 
