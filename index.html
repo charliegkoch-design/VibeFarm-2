@@ -281,43 +281,97 @@
 
     /* ── Welcome modal ── */
     #welcome-modal {
-      position: fixed; inset: 0; z-index: 80;
+      position: fixed; inset: 0; z-index: 90;
       display: flex; align-items: center; justify-content: center;
-      background: rgba(5,10,18,.88);
-      backdrop-filter: blur(6px);
+      background: rgba(3,7,14,.92);
+      backdrop-filter: blur(8px);
     }
     #welcome-box {
-      background: linear-gradient(160deg,rgba(12,24,18,.98),rgba(8,16,28,.98));
-      border: 1px solid rgba(86,201,122,.35);
-      border-radius: 18px;
-      padding: 26px 28px 22px;
-      max-width: min(520px, 96vw);
+      background: linear-gradient(160deg,rgba(10,22,16,.99),rgba(6,14,26,.99));
+      border: 1px solid rgba(86,201,122,.4);
+      border-radius: 20px;
+      padding: 28px 30px 24px;
+      max-width: min(540px, 96vw);
       width: 100%;
-      box-shadow: 0 24px 80px rgba(0,0,0,.7);
+      box-shadow: 0 28px 90px rgba(0,0,0,.8);
       color: var(--text);
+      position: relative;
     }
+    /* Step dots */
+    #wc-dots {
+      display: flex; justify-content: center; gap: 8px; margin-bottom: 20px;
+    }
+    .wc-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,.18); transition: all .25s;
+    }
+    .wc-dot.active { background: var(--accent); transform: scale(1.3); }
+    .wc-dot.done   { background: rgba(86,201,122,.5); }
+    /* Page slides */
+    .wc-page { display: none; }
+    .wc-page.active { display: block; }
     #welcome-box h1 {
-      font-size: 22px; font-weight: 800; margin-bottom: 4px;
+      font-size: 22px; font-weight: 800; margin: 0 0 5px;
       background: linear-gradient(90deg,#56c97a,#ffd54f);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    #welcome-box .wc-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 18px; }
-    .wc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+    #welcome-box h2 {
+      font-size: 17px; font-weight: 800; margin: 0 0 14px;
+      color: #ffd54f;
+    }
+    #welcome-box .wc-sub {
+      font-size: 12px; color: var(--text-dim); margin-bottom: 20px; line-height: 1.6;
+    }
+    .wc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
     .wc-card {
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
-      border-radius: 10px; padding: 10px 12px;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
+      border-radius: 10px; padding: 11px 13px;
     }
-    .wc-card .wc-head { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
-    .wc-card ul { list-style: none; font-size: 11px; color: var(--text-dim); line-height: 1.65; }
+    .wc-card .wc-head {
+      font-size: 13px; font-weight: 700; margin-bottom: 7px;
+      color: var(--accent);
+    }
+    .wc-card ul { list-style: none; font-size: 11px; color: var(--text-dim); line-height: 1.75; margin: 0; padding: 0; }
     .wc-card ul li::before { content: '› '; color: var(--accent); }
-    #welcome-start {
-      width: 100%; padding: 12px;
-      background: linear-gradient(90deg,#56c97a,#3da85c);
-      border: none; border-radius: 10px;
-      color: #fff; font-size: 15px; font-weight: 700;
-      cursor: pointer; transition: opacity .15s;
+    .wc-card ul li b { color: #fff; background: rgba(255,255,255,.1); padding: 0 4px; border-radius: 3px; font-size: 10px; }
+    /* Key badge */
+    kbd.wk {
+      display: inline-block; background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.25); border-radius: 4px;
+      padding: 1px 6px; font-size: 11px; font-family: inherit; font-weight: 700;
+      color: #fff; vertical-align: middle;
     }
-    #welcome-start:hover { opacity: .88; }
+    .wc-tip {
+      background: rgba(86,201,122,.08); border: 1px solid rgba(86,201,122,.2);
+      border-radius: 8px; padding: 9px 12px; font-size: 11px; color: var(--accent);
+      margin-bottom: 16px; line-height: 1.6;
+    }
+    /* Nav row */
+    .wc-nav {
+      display: flex; align-items: center; gap: 10px; margin-top: 6px;
+    }
+    .wc-btn {
+      flex: 1; padding: 11px;
+      border: none; border-radius: 10px;
+      font-size: 13px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: all .15s;
+    }
+    .wc-btn.next {
+      background: linear-gradient(90deg,#56c97a,#3da85c);
+      color: #fff;
+    }
+    .wc-btn.next:disabled {
+      opacity: .4; cursor: not-allowed;
+    }
+    .wc-btn.skip {
+      flex: 0 0 auto; padding: 11px 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      color: var(--text-dim); font-size: 11px;
+    }
+    .wc-btn.skip:hover { background: rgba(255,255,255,.1); color: var(--text); }
+    /* Timer ring on next button */
+    #wc-timer { font-size: 11px; margin-left: 6px; opacity: .7; }
 
     /* Enemy HP bars */
     .e-hp-wrap { position: fixed; pointer-events: none; z-index: 13; width: 38px; height: 5px; border-radius: 3px; background: rgba(0,0,0,.5); transform: translateX(-50%); }
@@ -1236,55 +1290,140 @@
     </div>
   </div>
 
-  <!-- Welcome tutorial popup -->
+  <!-- Welcome tutorial — first-time forced walkthrough -->
   <div id="welcome-modal">
     <div id="welcome-box">
-      <h1>🌾 Welcome to Valley Farm!</h1>
-      <p class="wc-sub">Build a thriving colony from scratch — farm, gather, craft, trade, and fight.</p>
-      <div class="wc-grid">
-        <div class="wc-card">
-          <div class="wc-head">🌱 Farming</div>
-          <ul>
-            <li><b>1</b> Hoe → till grass</li>
-            <li><b>2</b> Water → water tile</li>
-            <li><b>3</b> Seeds → plant crop</li>
-            <li><b>4</b> Scythe → harvest ripe crop</li>
-            <li><b>[ ]</b> cycle seed type</li>
-            <li><b>P</b> buy seeds from shop</li>
-          </ul>
+
+      <!-- Step dots -->
+      <div id="wc-dots">
+        <div class="wc-dot active" id="wc-dot-0"></div>
+        <div class="wc-dot"        id="wc-dot-1"></div>
+        <div class="wc-dot"        id="wc-dot-2"></div>
+        <div class="wc-dot"        id="wc-dot-3"></div>
+      </div>
+
+      <!-- Page 0: Welcome -->
+      <div class="wc-page active" id="wc-p0">
+        <h1>🌾 Welcome to Valley Farm!</h1>
+        <p class="wc-sub">Build a thriving colony from scratch. Farm the land, gather resources, construct buildings, and battle enemies — alone or with friends.</p>
+        <div class="wc-tip">
+          📖 This is a <strong>quick tutorial</strong>. Read each page to unlock the next one — it only takes 30 seconds!
         </div>
-        <div class="wc-card">
-          <div class="wc-head">🪓 Gathering</div>
-          <ul>
-            <li><b>6</b> Axe → click trees for wood</li>
-            <li><b>7</b> Pick → click rocks for stone</li>
-            <li><b>G</b> forage mushrooms &amp; berries</li>
-            <li><b>F</b> fish on beach tiles</li>
-            <li>Trees &amp; rocks grow back over time!</li>
-          </ul>
-        </div>
-        <div class="wc-card">
-          <div class="wc-head">🏗️ Building</div>
-          <ul>
-            <li><b>B</b> open Build menu</li>
-            <li>Select a building, then…</li>
-            <li><b>5</b> Hammer + <b>E</b> on a tile</li>
-            <li>Buildings produce resources continuously</li>
-            <li><b>C</b> craft better tool tiers</li>
-          </ul>
-        </div>
-        <div class="wc-card">
-          <div class="wc-head">⚔️ Combat</div>
-          <ul>
-            <li><b>8</b> Sword + <b>click</b> to attack</li>
-            <li>Red portal near home → Dueling Arena</li>
-            <li>Purple portal → Gold Mine</li>
-            <li>Defeat 5 waves for big rewards</li>
-            <li><b>F</b> near your house to sleep &amp; heal</li>
-          </ul>
+        <div class="wc-grid">
+          <div class="wc-card">
+            <div class="wc-head">🎮 Movement</div>
+            <ul>
+              <li><kbd class="wk">W A S D</kbd> move</li>
+              <li><kbd class="wk">E</kbd> or <kbd class="wk">Space</kbd> interact</li>
+              <li>Camera follows you</li>
+              <li>You start near your house</li>
+            </ul>
+          </div>
+          <div class="wc-card">
+            <div class="wc-head">🔢 Tool Hotbar</div>
+            <ul>
+              <li><kbd class="wk">1</kbd> Hoe &nbsp;&nbsp;<kbd class="wk">2</kbd> Watering Can</li>
+              <li><kbd class="wk">3</kbd> Seeds &nbsp;<kbd class="wk">4</kbd> Scythe</li>
+              <li><kbd class="wk">5</kbd> Hammer &nbsp;<kbd class="wk">6</kbd> Axe</li>
+              <li><kbd class="wk">7</kbd> Pickaxe &nbsp;<kbd class="wk">8</kbd> Sword</li>
+            </ul>
+          </div>
         </div>
       </div>
-      <button id="welcome-start">Start Farming! 🌾</button>
+
+      <!-- Page 1: Farming & Gathering -->
+      <div class="wc-page" id="wc-p1">
+        <h2>🌱 Farming &amp; Gathering</h2>
+        <div class="wc-grid">
+          <div class="wc-card">
+            <div class="wc-head">🌱 Farming (4 steps)</div>
+            <ul>
+              <li><kbd class="wk">1</kbd> Hoe → press <kbd class="wk">E</kbd> on grass to till</li>
+              <li><kbd class="wk">2</kbd> Water → press <kbd class="wk">E</kbd> on tilled tile</li>
+              <li><kbd class="wk">3</kbd> Seeds → press <kbd class="wk">E</kbd> to plant</li>
+              <li><kbd class="wk">4</kbd> Scythe → press <kbd class="wk">E</kbd> on ripe crop</li>
+              <li><kbd class="wk">[</kbd> <kbd class="wk">]</kbd> cycle seed types</li>
+              <li>Sleep to advance days &amp; grow crops</li>
+            </ul>
+          </div>
+          <div class="wc-card">
+            <div class="wc-head">🪓 Gathering</div>
+            <ul>
+              <li><kbd class="wk">6</kbd> Axe + <kbd class="wk">E</kbd> on trees → wood</li>
+              <li><kbd class="wk">7</kbd> Pickaxe + <kbd class="wk">E</kbd> on rocks → stone</li>
+              <li><kbd class="wk">G</kbd> forage mushrooms &amp; berries</li>
+              <li><kbd class="wk">F</kbd> fish on beach tiles</li>
+              <li>Trees &amp; rocks regrow over time!</li>
+            </ul>
+          </div>
+        </div>
+        <div class="wc-tip">😴 Press <kbd class="wk">F</kbd> <strong>near your house</strong> to sleep — this heals you, advances the day, and grows your crops!</div>
+      </div>
+
+      <!-- Page 2: Building & Crafting -->
+      <div class="wc-page" id="wc-p2">
+        <h2>🏗️ Building &amp; Crafting</h2>
+        <div class="wc-grid">
+          <div class="wc-card">
+            <div class="wc-head">🏗️ Placing Buildings</div>
+            <ul>
+              <li><kbd class="wk">B</kbd> open the Build menu</li>
+              <li>Select a building from the menu</li>
+              <li>Equip <kbd class="wk">5</kbd> Hammer</li>
+              <li>Walk to a clear tile &amp; press <kbd class="wk">E</kbd></li>
+              <li>Buildings give passive resources every few seconds</li>
+            </ul>
+          </div>
+          <div class="wc-card">
+            <div class="wc-head">🔧 Crafting</div>
+            <ul>
+              <li><kbd class="wk">C</kbd> open the Craft menu</li>
+              <li>Upgrade tools (Hoe, Sword, Axe…)</li>
+              <li>Higher tiers = faster &amp; stronger</li>
+              <li>Build a <strong>Forge</strong> to reduce craft costs by 25%</li>
+              <li><kbd class="wk">P</kbd> buy seeds from the shop</li>
+            </ul>
+          </div>
+        </div>
+        <div class="wc-tip">💡 Build a <strong>Market</strong> to boost sell prices +20% and a <strong>Barracks</strong> to increase sword damage!</div>
+      </div>
+
+      <!-- Page 3: Combat & Multiplayer -->
+      <div class="wc-page" id="wc-p3">
+        <h2>⚔️ Combat &amp; Multiplayer</h2>
+        <div class="wc-grid">
+          <div class="wc-card">
+            <div class="wc-head">⚔️ Combat</div>
+            <ul>
+              <li>Equip <kbd class="wk">8</kbd> Sword, press <kbd class="wk">E</kbd> to attack</li>
+              <li><strong>🔴 Red portal</strong> near home → Dueling Arena</li>
+              <li><strong>🟣 Purple portal</strong> → Gold Mine</li>
+              <li>Survive 5 waves in the arena for big rewards</li>
+              <li>Upgrade your sword tier to deal more damage</li>
+            </ul>
+          </div>
+          <div class="wc-card">
+            <div class="wc-head">🌐 Multiplayer</div>
+            <ul>
+              <li>Click <strong>🌐 Multiplayer</strong> to host or join a room</li>
+              <li>Walk to another player's building &amp; press <kbd class="wk">E</kbd></li>
+              <li>Challenge them to a <strong>PvP duel</strong> in the arena</li>
+              <li>Winner takes their building or 500 gold!</li>
+              <li><kbd class="wk">Enter</kbd> to chat with other players</li>
+            </ul>
+          </div>
+        </div>
+        <div class="wc-tip">🏆 Complete daily quests (top-left) for bonus rewards, and check your stats with <kbd class="wk">O</kbd>!</div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="wc-nav">
+        <button class="wc-btn skip" id="wc-skip" style="display:none">Skip tutorial</button>
+        <button class="wc-btn next" id="wc-next" disabled>
+          Reading… <span id="wc-timer"></span>
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -5402,14 +5541,76 @@
     refreshUI();
 
     // ── Welcome modal ─────────────────────────────────────────────────────
+    // ── Tutorial modal ────────────────────────────────────────────────────
     const welcomeModal = document.getElementById('welcome-modal');
-    const welcomeStart = document.getElementById('welcome-start');
-    if (welcomeStart) {
-      welcomeStart.onclick = () => {
-        if (welcomeModal) welcomeModal.style.display = 'none';
+    const isFirstTime  = !localStorage.getItem('vf-tutorial-done');
+
+    (function initTutorial(){
+      const pages    = document.querySelectorAll('.wc-page');
+      const dots     = document.querySelectorAll('.wc-dot');
+      const nextBtn  = document.getElementById('wc-next');
+      const skipBtn  = document.getElementById('wc-skip');
+      const timerSpan= document.getElementById('wc-timer');
+      const PAGE_DELAYS = [5, 6, 6, 6]; // seconds to read each page
+      let currentPage = 0;
+      let readTimer   = null;
+      let countdown   = 0;
+
+      function closeTutorial(){
+        welcomeModal.style.display = 'none';
+        localStorage.setItem('vf-tutorial-done', '1');
         audio.resume();
+      }
+
+      function goToPage(idx){
+        pages.forEach((p,i) => p.classList.toggle('active', i===idx));
+        dots.forEach((d,i)  => {
+          d.classList.toggle('active', i===idx);
+          d.classList.toggle('done',   i<idx);
+        });
+        currentPage = idx;
+        // Disable next, start countdown
+        nextBtn.disabled = true;
+        clearInterval(readTimer);
+        countdown = PAGE_DELAYS[idx] || 4;
+        timerSpan.textContent = '('+countdown+'s)';
+        readTimer = setInterval(()=>{
+          countdown--;
+          if(countdown > 0){
+            timerSpan.textContent = '('+countdown+'s)';
+          } else {
+            clearInterval(readTimer);
+            timerSpan.textContent = '';
+            nextBtn.disabled = false;
+            const isLast = idx >= pages.length - 1;
+            nextBtn.textContent = isLast ? '🌾 Start Farming!' : 'Next →';
+          }
+        }, 1000);
+      }
+
+      nextBtn.onclick = () => {
+        if(currentPage < pages.length - 1){
+          goToPage(currentPage + 1);
+        } else {
+          closeTutorial();
+        }
       };
-    }
+
+      skipBtn.onclick = closeTutorial;
+
+      // First time: force through — hide skip
+      // Return visit: skip button visible immediately, still show tutorial as reminder
+      if(!isFirstTime){
+        skipBtn.style.display = 'block';
+        // Shorten delays for return players
+        PAGE_DELAYS.fill(0);
+        nextBtn.disabled = false;
+        nextBtn.textContent = 'Next →';
+        timerSpan.textContent = '';
+      } else {
+        goToPage(0);
+      }
+    })();
 
     // ── Vibe Jam 2026 Portal Row (south beach) ─────────────────────────────
     const vjPortals = new VibeJamPortalRow(THREE, scene);
