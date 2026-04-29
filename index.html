@@ -5537,48 +5537,9 @@
     // ── Welcome modal ─────────────────────────────────────────────────────
     // ── Tutorial modal ────────────────────────────────────────────────────
     const welcomeModal = document.getElementById('welcome-modal');
-    const isFirstTime  = false; // tutorial disabled
-
-    (function initTutorial(){
-      const pages    = document.querySelectorAll('.wc-page');
-      const dots     = document.querySelectorAll('.wc-dot');
-      const nextBtn  = document.getElementById('wc-next');
-      const skipBtn  = document.getElementById('wc-skip');
-      let currentPage = 0;
-
-      function closeTutorial(){
-        welcomeModal.style.display = 'none';
-        localStorage.setItem('vf-tutorial-done', '1');
-        audio.resume();
-      }
-
-      function goToPage(idx){
-        pages.forEach((p,i) => p.classList.toggle('active', i===idx));
-        dots.forEach((d,i)  => {
-          d.classList.toggle('active', i===idx);
-          d.classList.toggle('done',   i<idx);
-        });
-        currentPage = idx;
-        const isLast = idx >= pages.length - 1;
-        nextBtn.textContent = isLast ? '🌾 Start Farming!' : 'Next →';
-      }
-
-      nextBtn.onclick = () => {
-        if(currentPage < pages.length - 1){
-          goToPage(currentPage + 1);
-        } else {
-          closeTutorial();
-        }
-      };
-
-      skipBtn.onclick = closeTutorial;
-
-      if(!isFirstTime){
-        closeTutorial();
-        return;
-      }
-      goToPage(0);
-    })();
+    // Tutorial disabled — hide immediately without touching audio
+    if (welcomeModal) welcomeModal.style.display = 'none';
+    localStorage.setItem('vf-tutorial-done', '1');
 
     // ── Vibe Jam 2026 Portal Row (south beach) ─────────────────────────────
     const vjPortals = new VibeJamPortalRow(THREE, scene);
