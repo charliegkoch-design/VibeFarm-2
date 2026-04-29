@@ -282,7 +282,8 @@
     /* ── Welcome modal ── */
     #welcome-modal {
       position: fixed; inset: 0; z-index: 90;
-      display: flex; align-items: center; justify-content: center;
+      display: none !important;
+      pointer-events: none;
       background: rgba(3,7,14,.92);
       backdrop-filter: blur(8px);
     }
@@ -5536,7 +5537,7 @@
     // ── Welcome modal ─────────────────────────────────────────────────────
     // ── Tutorial modal ────────────────────────────────────────────────────
     const welcomeModal = document.getElementById('welcome-modal');
-    const isFirstTime  = !localStorage.getItem('vf-tutorial-done');
+    const isFirstTime  = false; // tutorial disabled
 
     (function initTutorial(){
       const pages    = document.querySelectorAll('.wc-page');
