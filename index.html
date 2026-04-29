@@ -281,12 +281,16 @@
 
     /* ── Welcome modal ── */
     #welcome-modal {
-      position: fixed; inset: 0; z-index: 90;
-      display: none !important;
-      pointer-events: none;
-      background: rgba(3,7,14,.92);
+      position: fixed; inset: 0; z-index: 2147483647;
+      display: none;
+      align-items: center; justify-content: center;
+      background: rgba(3,7,14,.93);
       backdrop-filter: blur(8px);
+      pointer-events: all;
     }
+    #welcome-modal.tut-open { display: flex; }
+    #welcome-box { pointer-events: all; }
+    .wc-btn { pointer-events: all; cursor: pointer; }
     #welcome-box {
       background: linear-gradient(160deg,rgba(10,22,16,.99),rgba(6,14,26,.99));
       border: 1px solid rgba(86,201,122,.4);
@@ -5534,12 +5538,54 @@
 
     refreshUI();
 
-    // ── Welcome modal ─────────────────────────────────────────────────────
-    // ── Tutorial modal ────────────────────────────────────────────────────
-    const welcomeModal = document.getElementById('welcome-modal');
-    // Tutorial disabled — hide immediately without touching audio
-    if (welcomeModal) welcomeModal.style.display = 'none';
-    localStorage.setItem('vf-tutorial-done', '1');
+    // ── First-time tutorial ───────────────────────────────────────────────
+    (function() {
+      const modal   = document.getElementById('welcome-modal');
+      if (!modal) return;
+
+      // Already seen it on this device — stay hidden and bail out.
+      if (localStorage.getItem('vf-tutorial-done')) return;
+
+      const pages   = Array.from(modal.querySelectorAll('.wc-page'));
+      const dots    = Array.from(modal.querySelectorAll('.wc-dot'));
+      const nextBtn = document.getElementById('wc-next');
+      const skipBtn = document.getElementById('wc-skip');
+      let cur = 0;
+
+      function showPage(idx) {
+        pages.forEach((p, i) => { p.style.display = i === idx ? 'block' : 'none'; });
+        dots.forEach((d, i) => {
+          d.className = 'wc-dot' + (i === idx ? ' active' : i < idx ? ' done' : '');
+        });
+        cur = idx;
+        if (nextBtn) nextBtn.textContent = idx >= pages.length - 1 ? '🌾 Start Farming!' : 'Next →';
+      }
+
+      function closeTutorial() {
+        modal.classList.remove('tut-open');
+        localStorage.setItem('vf-tutorial-done', '1');
+        try { audio.resume(); } catch (e) {}
+      }
+
+      if (nextBtn) {
+        nextBtn.onclick = function(e) {
+          e.stopPropagation();
+          if (cur < pages.length - 1) showPage(cur + 1);
+          else closeTutorial();
+        };
+      }
+      if (skipBtn) {
+        skipBtn.onclick = function(e) {
+          e.stopPropagation();
+          closeTutorial();
+        };
+        skipBtn.style.display = '';
+        skipBtn.style.visibility = '';
+      }
+
+      showPage(0);
+      modal.classList.add('tut-open');
+    })();
 
     // ── Vibe Jam 2026 Portal Row (south beach) ─────────────────────────────
     const vjPortals = new VibeJamPortalRow(THREE, scene);
