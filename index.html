@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Valley Farm — Colony Builder</title>
+  <meta name="description" content="Farm, build, craft, and conquer in this multiplayer colony builder. Till land, raise a settlement, fight mine enemies, and duel other players for their buildings." />
+  <meta name="theme-color" content="#0d1a2e" />
+  <meta property="og:title" content="Valley Farm — Colony Builder" />
+  <meta property="og:description" content="A real-time multiplayer farming colony builder. Farm, craft, build, and duel!" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>" />
   <script async src="https://vibej.am/2026/widget.js"></script>
   <!-- Multiplayer via WebSocket relay server hosted on Render -->
   <style>
@@ -20,6 +26,39 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; font-family: "Segoe UI", system-ui, sans-serif; background: #0d1a2e; color: var(--text); }
     #cvs { position: fixed; inset: 0; z-index: 1; }
+
+    /* ── Loading screen ── */
+    #loading-screen {
+      position: fixed; inset: 0; z-index: 99999;
+      background: radial-gradient(ellipse at 50% 60%, #0a1f12 0%, #050d18 100%);
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity .6s ease, visibility .6s;
+    }
+    #loading-screen.fade-out { opacity: 0; visibility: hidden; }
+    #loading-inner { text-align: center; }
+    #loading-title {
+      font-size: 42px; font-weight: 900; letter-spacing: -.5px;
+      background: linear-gradient(90deg, #56c97a, #ffd54f, #56c97a);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 2s linear infinite;
+      margin-bottom: 4px;
+    }
+    #loading-sub {
+      font-size: 13px; font-weight: 600; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--text-dim); margin-bottom: 32px;
+    }
+    #loading-bar-wrap {
+      width: 240px; height: 4px; border-radius: 4px;
+      background: rgba(255,255,255,.1); margin: 0 auto 16px; overflow: hidden;
+    }
+    #loading-bar {
+      height: 100%; width: 0; border-radius: 4px;
+      background: linear-gradient(90deg,#56c97a,#ffd54f);
+      animation: load-fill 1.8s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    @keyframes load-fill { from{width:0} to{width:100%} }
+    #loading-tip { font-size: 11px; color: var(--text-dim); }
     #cvs canvas { display: block; width: 100vw !important; height: 100vh !important; }
 
     /* ── Glass panel mixin ── */
@@ -488,6 +527,36 @@
       80% { transform: translate(2px,3px); }
     }
 
+    /* ── Extra polish ── */
+    /* Buttons get a subtle press feel */
+    button { transition: transform .08s, box-shadow .08s; }
+    button:active { transform: scale(.96); }
+
+    /* Panel entrance */
+    .modal { animation: panel-in .18s ease-out; }
+    @keyframes panel-in {
+      from { opacity: 0; transform: translate(-50%,-50%) scale(.97); }
+      to   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    }
+
+    /* Combo pop */
+    #combo-label { transition: transform .1s; }
+    #combo-label.pop { animation: combo-pop .2s ease-out; }
+    @keyframes combo-pop { 0%{transform:scale(1)} 50%{transform:scale(1.35)} 100%{transform:scale(1)} }
+
+    /* Hotbar glow on active */
+    .hb-slot.active { box-shadow: 0 0 14px rgba(86,201,122,.5), inset 0 0 8px rgba(86,201,122,.12); }
+
+    /* Hint line pulse when newly shown */
+    #hint-line { transition: opacity .2s; }
+
+    /* Achievement toast icon prefix */
+    #ach-toast::before { content: '🏆 '; }
+
+    /* Resource panel rows — cleaner hover */
+    .rp-row { border-radius: 6px; padding: 1px 4px; transition: background .15s; }
+    .rp-row:hover { background: rgba(255,255,255,.04); }
+
     /* ── Level-up banner (top-right) ── */
     #lvl-banner {
       display: none;
@@ -882,6 +951,16 @@
 <body>
   <div id="cvs"></div>
 
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <div id="loading-inner">
+      <div id="loading-title">🌾 Valley Farm</div>
+      <div id="loading-sub">Colony Builder</div>
+      <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+      <div id="loading-tip">Generating world…</div>
+    </div>
+  </div>
+
   <!-- Top bar -->
   <div class="panel" id="top-bar">
     <span id="weather-chip" title="Weather">☀️</span>
@@ -1077,7 +1156,7 @@
       <div style="background:rgba(86,201,122,.1);border:1px solid rgba(86,201,122,.3);border-radius:8px;padding:8px 10px;font-size:11px;color:var(--accent);margin-bottom:14px;">
         ⚡ <strong>Zero setup</strong> — play at
         <a href="https://sparkly-sundae-c3d1f5.netlify.app/" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline;">sparkly-sundae-c3d1f5.netlify.app</a>
-        with friends. WebRTC — no account or install. <strong>Host</strong> creates a code; <strong>copy the invite link</strong> so others join your world in one click.
+        with friends. WebSocket relay — no account or install. <strong>Host</strong> creates a code; <strong>copy the invite link</strong> so others join your world in one click.
       </div>
 
       <div class="mp-section">
@@ -2781,14 +2860,15 @@
       if(!this._lbl)return;
       if(this.streak<2){this._lbl.style.display='none';if(this._sub)this._sub.style.display='none';return;}
       const m=this.mult();this._lbl.textContent=m.toFixed(m%1?1:0)+'× COMBO!';this._lbl.style.display='block';
+      this._lbl.classList.remove('pop');void this._lbl.offsetWidth;this._lbl.classList.add('pop');
       if(this._sub){this._sub.textContent=this.streak+' streak';this._sub.style.display='block';}
     }
   }
 
   class AchievementManager{
     constructor(){this.done=new Set();this._el=document.getElementById('ach-toast');this._t=null;}
-    check(key,msg){if(this.done.has(key))return false;this.done.add(key);this._show('🏆 '+msg);return true;}
-    _show(msg){if(!this._el)return;this._el.textContent=msg;this._el.style.display='block';clearTimeout(this._t);this._t=setTimeout(()=>{this._el.style.display='none';},3800);}
+    check(key,msg){if(this.done.has(key))return false;this.done.add(key);this._show(msg);return true;}
+    _show(msg){if(!this._el)return;this._el.textContent='🏆 '+msg;this._el.style.animation='none';void this._el.offsetWidth;this._el.style.animation='';this._el.style.display='block';clearTimeout(this._t);this._t=setTimeout(()=>{this._el.style.display='none';},4000);}
   }
 
   const Q_POOL=[
@@ -4136,8 +4216,10 @@
       ground.buildings[ground.idx(gx,gz)]=0;
       const ci=colony.placed.findIndex(b=>b.gx===gx&&b.gz===gz);
       if(ci>=0){scene.remove(colony.placed[ci].mesh);colony.placed.splice(ci,1);}
-      const hi=bldgVis.houses.findIndex(h=>h.gx===gx&&h.gz===gz);
-      if(hi>=0) bldgVis.houses.splice(hi,1);
+      // bldgVis.houses is a Map keyed by "gx,gz"
+      const hk = gx+','+gz;
+      const hm = bldgVis.houses.get(hk);
+      if(hm){scene.remove(hm);bldgVis.houses.delete(hk);}
       ground.texture.needsUpdate=true;
       delete buildingOwners[`${gx},${gz}`];
     }
@@ -5095,8 +5177,11 @@
 
     function showLevelBanner(lv){
       if(!lvlBanner)return;
-      lvlBanner.textContent='⚡ LEVEL '+lv+'! ✨ +1 Skill Point';
+      lvlBanner.innerHTML='⚡ LEVEL <strong>'+lv+'</strong> — +1 Skill Point ✨';
       lvlBanner.classList.remove('show');void lvlBanner.offsetWidth;lvlBanner.classList.add('show');
+      // Also briefly flash the XP bar gold
+      const xpBar=document.getElementById('lvl-bar-fill');
+      if(xpBar){xpBar.style.background='linear-gradient(90deg,#fff,#ffd54f,#fff)';setTimeout(()=>{xpBar.style.background='';},800);}
     }
 
     function showEventBanner(title,body){
@@ -5602,7 +5687,9 @@
 
     // Handle arrival via portal — skip welcome, teleport near the return portal
     if (vjPortals._arrived) {
-      if (welcomeModal) welcomeModal.style.display = 'none';
+      const _wm = document.getElementById('welcome-modal');
+      if (_wm) { _wm.classList.remove('tut-open'); _wm.style.display = 'none'; }
+      localStorage.setItem('vf-tutorial-done', '1');
       audio.resume();
       player.group.position.set(2, .5, -34);
       const vjName = new URLSearchParams(location.search).get('username');
@@ -5878,6 +5965,12 @@
       camera.left=(-f*a)/2;camera.right=(f*a)/2;camera.top=f/2;camera.bottom=-f/2;
       camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);
     });
+
+  // Dismiss loading screen after first rendered frame
+  requestAnimationFrame(()=>{
+    const ls=document.getElementById('loading-screen');
+    if(ls){ls.classList.add('fade-out');setTimeout(()=>ls.remove(),700);}
+  });
 
   requestAnimationFrame(animate);
   }catch(err){
