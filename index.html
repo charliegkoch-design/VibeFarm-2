@@ -5513,7 +5513,17 @@
           dmgFlash.style.background='rgba(200,0,0,.35)';
           setTimeout(()=>dmgFlash.style.background='rgba(200,0,0,0)',120);
           refreshUI();
-          if (civ.hp <= 0) _endPvpDuel(false);
+          if (civ.hp <= 0) {
+            // Tell the attacker they won before ending locally
+            mp.sendAction({ kind: 'pvp-died', to: pvpDuel.opponentId });
+            _endPvpDuel(false);
+          }
+          break;
+        }
+        case 'pvp-died': {
+          // Opponent confirmed they died — we win
+          if (a.to !== mp.myId || !pvpDuel || pvpDuel.state !== 'active') break;
+          _endPvpDuel(true);
           break;
         }
         case 'duel-remove-building': {
@@ -5689,7 +5699,7 @@
           const oppPct=Math.max(0,pvpDuel.oppHp/(pvpDuel.myMaxHp||100)*100).toFixed(1);
           _pvpOppBar.style.width=oppPct+'%';
           _pvpOppHp.textContent=pvpDuel.oppHp+' HP';
-          if(pvpDuel.oppHp<=0) _endPvpDuel(true);
+          // Win is now triggered by pvp-died message, not snapshot, to avoid race condition
         }
       }
 
